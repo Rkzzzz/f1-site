@@ -1,0 +1,337 @@
+/* Твой изначальный стиль с исправлениями */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a; /* Твой темный фон */
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+/* Шапка сайта */
+.header {
+    background-color: #333;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid red;
+}
+
+.logo img {
+    height: 50px;
+}
+
+/* Навигация (твое меню) */
+.nav {
+    position: relative;
+}
+
+.nav-menu-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+/* Выпадающий список - теперь точно будет работать */
+.nav-dropdown {
+    display: none; /* Скрыто по умолчанию */
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #444;
+    min-width: 150px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+/* Показываем меню, когда JS добавляет класс .open */
+.nav-dropdown.open {
+    display: block;
+}
+
+.nav-dropdown a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.nav-dropdown a:hover {
+    background-color: #555;
+}
+
+/* Основной контент */
+.main {
+    padding: 20px;
+}
+
+/* Твои карточки новостей/команд */
+.news-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.news-card {
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 15px;
+    width: 300px;
+    transition: 0.3s;
+}
+
+.news-card:hover {
+    border-color: red;
+}
+
+/* ШАХМАТКА ДЛЯ ТРАСС (Добавлено в твоем стиле) */
+.circuit-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.circuit-row {
+    display: flex;
+    background-color: #333;
+    border-radius: 15px;
+    overflow: hidden;
+    align-items: center;
+}
+
+/* Сама шахматка */
+.circuit-row:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.circuit-img {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+.circuit-img img {
+    max-width: 100%;
+    height: auto;
+}
+
+.circuit-text {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Подвал */
+.footer {
+    background-color: #333;
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    border-top: 2px solid red;
+}
+/* СТИЛИ ДЛЯ СТРАНИЦЫ РЕЗУЛЬТАТОВ */
+.results-header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(180deg, #333 0%, #1a1a1a 100%);
+    border-bottom: 4px solid #e10600;
+    margin-bottom: 30px;
+}
+
+.results-header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.results-table-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow-x: auto;
+    background: #252525;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+.f1-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+}
+
+.f1-table thead {
+    background-color: #111;
+    color: #888;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.f1-table th, .f1-table td {
+    padding: 18px 20px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+/* Эффект при наведении на строку */
+.f1-table tbody tr {
+    transition: background 0.2s;
+    cursor: default;
+}
+
+.f1-table tbody tr:hover {
+    background: rgba(225, 6, 0, 0.05);
+}
+
+/* Выделение позиции */
+.pos {
+    font-weight: bold;
+    font-size: 1.2rem;
+    width: 50px;
+}
+
+/* Цвета команд (полоска слева) */
+.team-red { border-left: 4px solid #e10600; }    /* Ferrari */
+.team-blue { border-left: 4px solid blue; } /* Red Bull */
+.team-lightblue {border-left: 4px solid cyan;} /* Mercedes*/
+.team-orange { border-left: 4px solid #FF9800; } /* McLaren */
+.team-black{ border-left: 4px solid black ;} 
+
+.pts {
+    font-weight: bold;
+    color: #e10600;
+    text-align: right !important;
+}
+
+.driver-name {
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+/* СТИЛИ ДЛЯ СТРАНИЦЫ ВХОДА */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 190px);
+    padding: 20px;
+}
+
+.login-box {
+    background-color: #333;
+    border: 2px solid #444;
+    border-radius: 15px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.login-box h1 {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #ccc;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #252525;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #e10600;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #e10600;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 10px;
+}
+
+.login-btn:hover {
+    background-color: #f10600;
+    transform: translateY(-2px);
+}
+
+.login-btn:active {
+    transform: translateY(0);
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.login-footer a {
+    color: #e10600;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.login-footer a:hover {
+    color: #f10600;
+    text-decoration: underline;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #444;
+}
+
+.divider span {
+    padding: 0 15px;
+    color: #666;
+    font-size: 0.85rem;
+}

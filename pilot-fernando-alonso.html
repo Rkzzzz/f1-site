@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fernando Alonso — Формула‑1</title>
+    <link rel="stylesheet" href="coloring.css?v=2">
+    <style>
+        /* Nav */
+        .nav { position: relative; }
+        .nav-menu-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: none; border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 6px; color: inherit; cursor: pointer;
+            font-size: 1rem; padding: 8px 16px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .nav-menu-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+        .nav-menu-btn .arrow { font-size: 0.7em; transition: transform 0.25s; display: inline-block; }
+        .nav-menu-btn[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+        .nav-dropdown {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            min-width: 200px; background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 1000;
+            overflow: hidden; animation: dropIn 0.2s ease;
+        }
+        .nav-dropdown.open { display: block; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown a {
+            display: block; padding: 11px 18px; text-decoration: none; color: inherit;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transition: background 0.15s, padding-left 0.15s; font-size: 0.95rem;
+        }
+        .nav-dropdown a:last-child { border-bottom: none; }
+        .nav-dropdown a:hover { background: rgba(255,255,255,0.08); padding-left: 24px; }
+
+        /* Page layout */
+        .driver-page { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: inherit; text-decoration: none; opacity: 0.5;
+            font-size: 0.88rem; margin-bottom: 28px;
+            transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 1; }
+
+        /* Hero block */
+        .driver-hero {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .driver-hero-left { padding: 36px 36px 36px 36px; display: flex; flex-direction: column; justify-content: space-between; }
+
+        .driver-number {
+            font-size: clamp(72px, 11vw, 120px);
+            font-weight: 900;
+            font-style: italic;
+            color: #e10600;
+            line-height: 1;
+            letter-spacing: -4px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .driver-flag { font-size: 2.2rem; margin-bottom: 6px; }
+        .driver-fullname { font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 10px; }
+        .driver-team-badge {
+            display: inline-block;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+            padding: 5px 14px;
+            font-size: 0.83rem;
+            opacity: 0.65;
+            margin-bottom: 28px;
+        }
+
+        /* Stats row inside hero */
+        .hero-stats { display: flex; gap: 24px; flex-wrap: wrap; }
+        .hero-stat .val { font-size: 1.6rem; font-weight: 800; color: #e10600; line-height: 1; }
+        .hero-stat .lbl { font-size: 0.7rem; opacity: 0.45; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+        /* Driver image area */
+        .driver-hero-right {
+            position: relative;
+            background: rgba(255,255,255,0.03);
+            overflow: hidden;
+            min-height: 300px;
+        }
+
+        .driver-hero-photo {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            height: 105%;
+            width: auto;
+            object-fit: contain;
+            object-position: bottom right;
+            transition: opacity 0.4s, transform 0.4s;
+            transform-origin: bottom right;
+        }
+
+        .driver-hero-helmet {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -40%) scale(0.65);
+            width: 200px; height: 200px;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.4s, transform 0.4s;
+            filter: drop-shadow(0 12px 32px rgba(0,0,0,0.7));
+        }
+
+        .driver-hero-right:hover .driver-hero-photo {
+            opacity: 0;
+            transform: scale(1.04);
+        }
+        .driver-hero-right:hover .driver-hero-helmet {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Sections */
+        .driver-sections { display: flex; flex-direction: column; gap: 32px; }
+
+        .section-block { }
+        .section-block h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            opacity: 0.9;
+        }
+        .section-block h2 span { color: #e10600; }
+
+        .section-block p {
+            opacity: 0.7;
+            line-height: 1.8;
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+        }
+        .section-block p:last-child { margin-bottom: 0; }
+
+        /* Career timeline */
+        .timeline { display: flex; flex-direction: column; gap: 0; }
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .timeline-item:last-child { border-bottom: none; }
+        .timeline-year {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #e10600;
+            padding-top: 2px;
+            opacity: 0.85;
+        }
+        .timeline-desc {
+            font-size: 0.88rem;
+            opacity: 0.65;
+            line-height: 1.55;
+        }
+        .timeline-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 2px;
+        }
+
+        /* Info table */
+        .info-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .info-table tr { border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .info-table td { padding: 10px 4px; vertical-align: top; }
+        .info-table td:first-child { opacity: 0.4; width: 150px; white-space: nowrap; }
+
+        /* Two-col layout for lower sections */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+        @media (max-width: 700px) {
+            .driver-hero { grid-template-columns: 1fr; }
+            .driver-hero-right { min-height: 220px; }
+            .driver-hero-photo { height: 100%; }
+            .two-col { grid-template-columns: 1fr; }
+            .driver-hero-left { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="index.html"><img src="https://resources.formulaf1.com/assets/images/logo.png" alt="Формула‑1" width="120"></a>
+        </div>
+        <nav class="nav">
+            <button class="nav-menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown">
+                Меню <span class="arrow">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown" role="menu">
+                <a href="index.html" role="menuitem">Главная</a>
+                <a href="calendar.html" role="menuitem">Календарь</a>
+                <a href="pilots.html" role="menuitem">Пилоты</a>
+                <a href="teams.html" role="menuitem">Команды</a>
+                <a href="result.html" role="menuitem">Результаты</a>
+                <a href="circitc.html" role="menuitem">Трассы</a>
+                <a href="about.html" role="menuitem">О нас</a>
+                <a href="contacts.html" role="menuitem">Контакты</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="driver-page">
+            <a href="pilots.html" class="back-link">← Все пилоты</a>
+
+            <!-- Hero -->
+            <div class="driver-hero">
+                <div class="driver-hero-left">
+                    <div>
+                        <div class="driver-number">#14</div>
+                        <div class="driver-flag">🇪🇸</div>
+                        <h1 class="driver-fullname">Фернандо Алонсо</h1>
+                        <span class="driver-team-badge">Aston Martin · Испания</span>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <div class="val">2</div>
+                            <div class="lbl">Титулы</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="val">32</div>
+                            <div class="lbl">Победы</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="val">99</div>
+                            <div class="lbl">Подиумы</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="val">22</div>
+                            <div class="lbl">Поулы</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="driver-hero-right">
+                    <img class="driver-hero-photo" src="https://media.formula1.com/image/upload/c_lfill,w_400/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/astonmartin/feralo01/2026astonmartinferalo01right.webp" alt="Fernando Alonso" loading="lazy">
+                    <img class="driver-hero-helmet" src="https://media.formula1.com/image/upload/c_lfill,w_220/q_auto/d_common:f1:2026:fallback:helmet:2026fallbackhelmet.webp/v1740000001/common/f1/2026/helmets/2026feralo01.webp" alt="Шлем Fernando Alonso" loading="lazy">
+                </div>
+            </div>
+
+            <div class="driver-sections">
+
+                <!-- Biography -->
+                <div class="section-block">
+                    <h2>О <span>пилоте</span></h2>
+                    <p>Фернандо Алонсо — двукратный чемпион мира и живая легенда автоспорта, выступающий в своём 23-м сезоне Формулы-1 — абсолютный рекорд. Испанец из Овьедо известен неукротимым духом, феноменальной скоростью в дождь и умением выжимать максимум из любого автомобиля.</p>
+                    <p>За карьеру Алонсо выступал за Minardi, Renault, McLaren, Ferrari, Alpine и Aston Martin. Дважды выигрывал чемпионат (2005, 2006), оба раза остановив серию Михаэля Шумахера. В 2007 году жестоко конфликтовал с Льюисом Хэмилтоном в McLaren.</p>
+                    <p>Параллельно с F1 выигрывал «24 часа Ле-Мана» (2018, 2019), «24 часа Дейтоны» (2019) и «Инди 500» (2019, первый в Тройной короне), чего не хватало лишь «Инди».</p>
+                </div>
+
+                <!-- Career path -->
+                <div class="section-block">
+                    <h2>Путь в <span>Формулу‑1</span></h2>
+                    <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year">1996</div>
+                        <div>
+                            <div class="timeline-title">Старт в картинге</div>
+                            <div class="timeline-desc">Начинает гоночную карьеру в 15 лет. Отец строит самодельный карт в гараже. Уже в первый год выигрывает несколько региональных чемпионатов.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">1999</div>
+                        <div>
+                            <div class="timeline-title">Формула Нисмо и Ф3000</div>
+                            <div class="timeline-desc">Переходит в одноместные болиды. Быстро прогрессирует через Формулу Нисмо и Евросерию Ф3000.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2001</div>
+                        <div>
+                            <div class="timeline-title">Дебют в Формуле-1 за Minardi</div>
+                            <div class="timeline-desc">Дебютирует в 19 лет за Minardi — одну из самых слабых команд пелотона. Производит яркое впечатление невзирая на неконкурентоспособный автомобиль.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2003–2006</div>
+                        <div>
+                            <div class="timeline-title">Renault: два титула</div>
+                            <div class="timeline-desc">Возвращается в F1 как тест-пилот Renault, затем становится гонщиком. В 2005 году в 24 года становится самым молодым чемпионом F1 на тот момент. В 2006 году подтверждает класс вторым титулом.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2007</div>
+                        <div>
+                            <div class="timeline-title">McLaren и конфликт с Хэмилтоном</div>
+                            <div class="timeline-desc">Переходит в McLaren. Остаток сезона проходит в конфликте с дебютантом Хэмилтоном. Оба финишируют третьими — на одно очко позади чемпиона Кими Райкконена.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2010–2014</div>
+                        <div>
+                            <div class="timeline-title">Ferrari</div>
+                            <div class="timeline-desc">Пять сезонов в Ferrari. Несколько раз близок к третьему титулу, но удача и надёжность подводят. Многие эксперты считают этот период лучшим в его карьере по качеству езды.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2015–2017</div>
+                        <div>
+                            <div class="timeline-title">Возвращение в McLaren</div>
+                            <div class="timeline-desc">Снова переходит в McLaren, теперь с двигателем Honda. Катастрофическое партнёрство. Алонсо вынужден показывать чудеса вождения, чтобы попасть в очки.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2018–2020</div>
+                        <div>
+                            <div class="timeline-title">Ле-Ман и Инди</div>
+                            <div class="timeline-desc">Уходит из F1. Выигрывает «24 часа Ле-Мана» с Toyota дважды подряд. Участвует в «Инди 500».</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2021</div>
+                        <div>
+                            <div class="timeline-title">Возвращение в F1 с Alpine</div>
+                            <div class="timeline-desc">Возвращается в F1 в 39 лет за Alpine (бывший Renault). Несмотря на возраст, немедленно борется за очки и подиумы.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2023</div>
+                        <div>
+                            <div class="timeline-title">Aston Martin</div>
+                            <div class="timeline-desc">Переходит в Aston Martin. В первый же сезон берёт восемь подиумов подряд, включая несколько третьих мест. Напоминает весь мир о своём непревзойдённом классе.</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2026</div>
+                        <div>
+                            <div class="timeline-title">23-й сезон</div>
+                            <div class="timeline-desc">В 44 года продолжает выступать на высшем уровне. Один из самых опытных и уважаемых пилотов пелотона всех времён.</div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Facts -->
+                <div class="section-block">
+                    <h2>Личные <span>данные</span></h2>
+                    <table class="info-table">
+                    <tr><td>Дата рождения</td><td>29 июля 1981</td></tr>
+                    <tr><td>Место рождения</td><td>Овьедо, Астурия, Испания</td></tr>
+                    <tr><td>Национальность</td><td>Испанец</td></tr>
+                    <tr><td>Команда 2026</td><td>Aston Martin</td></tr>
+                    <tr><td>Номер</td><td>#14</td></tr>
+                    <tr><td>Чемпионства F1</td><td>2 (2005, 2006)</td></tr>
+                    <tr><td>Победы</td><td>32</td></tr>
+                    <tr><td>Подиумы</td><td>99</td></tr>
+                    <tr><td>Поул-позиции</td><td>22</td></tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Формула‑1. Все права защищены.</p>
+        <p>Данные получены из официального источника: <a href="https://www.formula1.com">formula1.com</a></p>
+    </footer>
+
+    <script src="scripts.js"></script>
+    <script>
+        const btn = document.querySelector(".nav-menu-btn");
+        const dropdown = document.getElementById("nav-dropdown");
+        btn.addEventListener("click", () => {
+            const isOpen = dropdown.classList.toggle("open");
+            btn.setAttribute("aria-expanded", isOpen);
+        });
+        document.addEventListener("click", e => {
+            if (!e.target.closest(".nav")) {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+            }
+        });
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+            }
+        });
+    </script>
+</body>
+</html>

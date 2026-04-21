@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты — Формула‑1</title>
+    <link rel="stylesheet" href="coloring.css?v=2">
+    <style>
+        .nav { position: relative; }
+        .nav-menu-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: none; border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 6px; color: inherit; cursor: pointer;
+            font-size: 1rem; padding: 8px 16px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .nav-menu-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+        .nav-menu-btn .arrow { font-size: 0.7em; transition: transform 0.25s; display: inline-block; }
+        .nav-menu-btn[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+        .nav-dropdown {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            min-width: 200px; background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 1000;
+            overflow: hidden; animation: dropIn 0.2s ease;
+        }
+        .nav-dropdown.open { display: block; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown a {
+            display: block; padding: 11px 18px; text-decoration: none; color: inherit;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transition: background 0.15s, padding-left 0.15s; font-size: 0.95rem;
+        }
+        .nav-dropdown a:last-child { border-bottom: none; }
+        .nav-dropdown a:hover { background: rgba(255,255,255,0.08); padding-left: 24px; }
+
+        /* ── Page layout ── */
+        .contacts-wrap {
+            max-width: 780px;
+            margin: 48px auto;
+            padding: 0 16px;
+        }
+
+        .contacts-wrap h1 { margin-bottom: 12px; }
+
+        .contacts-lead {
+            opacity: 0.7;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+
+        /* Two-column layout */
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* Info cards */
+        .contact-info { display: flex; flex-direction: column; gap: 16px; }
+
+        .info-card {
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 18px 20px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .info-card .ic-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+
+        .info-card .ic-body .ic-label {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .info-card .ic-body .ic-value {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .info-card .ic-body .ic-value a { color: inherit; text-decoration: none; }
+        .info-card .ic-body .ic-value a:hover { text-decoration: underline; }
+
+        /* Social links */
+        .socials {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            text-decoration: none;
+            color: inherit;
+            font-size: 0.85rem;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .social-btn:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.35); }
+
+        /* Contact form */
+        .contact-form .field { margin-bottom: 16px; }
+
+        .contact-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            opacity: 0.65;
+        }
+
+        .contact-form input,
+        .contact-form select,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: inherit;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            box-sizing: border-box;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .contact-form input:focus,
+        .contact-form select:focus,
+        .contact-form textarea:focus { border-color: rgba(255,255,255,0.4); }
+
+        .contact-form input.error,
+        .contact-form textarea.error { border-color: #e10600; }
+
+        .contact-form select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aaa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 34px;
+            cursor: pointer;
+        }
+
+        .contact-form select option { background: #1a1a1a; }
+
+        .err-msg { display: none; color: #e10600; font-size: 0.75rem; margin-top: 3px; }
+        .field.has-error .err-msg { display: block; }
+
+        .btn-send {
+            width: 100%; padding: 11px; border: none; border-radius: 5px;
+            background: #e10600; color: #fff;
+            font-size: 0.95rem; font-family: inherit; font-weight: 600;
+            cursor: pointer; transition: background 0.2s, opacity 0.2s;
+        }
+        .btn-send:hover  { background: #b80500; }
+        .btn-send:active { opacity: 0.85; }
+        .btn-send:disabled { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); cursor: not-allowed; }
+
+        /* Success message */
+        .send-success {
+            display: none;
+            text-align: center;
+            padding: 32px 0;
+        }
+        .send-success .icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .send-success p { opacity: 0.7; font-size: 0.9rem; }
+
+        @media (max-width: 640px) {
+            .contacts-grid { grid-template-columns: 1fr; gap: 32px; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="index.html"><img src="https://resources.formulaf1.com/assets/images/logo.png" alt="Формула‑1" width="120"></a>
+        </div>
+        <nav class="nav">
+            <button class="nav-menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown">
+                Меню <span class="arrow">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown" role="menu">
+                <a href="index.html" role="menuitem">Главная</a>
+                <a href="register.html" role="menuitem">Регистрация\ Авторизация</a>
+                <a href="calendar.html" role="menuitem">Календарь</a>
+                <a href="pilots.html" role="menuitem">Пилоты</a>
+                <a href="teams.html" role="menuitem">Команды</a>
+                <a href="result.html" role="menuitem">Результаты</a>
+                <a href="circitc.html" role="menuitem">Трассы</a>
+                <a href="about.html" role="menuitem">О нас</a>
+                <a href="contacts.html" role="menuitem">Контакты</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="contacts-wrap">
+            <h1>Контакты</h1>
+            <p class="contacts-lead">
+                Есть вопросы, предложения или нашли ошибку? Напишите нам — мы отвечаем в течение 24 часов.
+            </p>
+
+            <div class="contacts-grid">
+
+                <!-- Left: contact info -->
+                <div class="contact-info">
+
+                    <div class="info-card">
+                        <div class="ic-icon">✉️</div>
+                        <div class="ic-body">
+                            <div class="ic-label">Email</div>
+                            <div class="ic-value"><a href="mailto:waterpolo385@gmail.com">waterpolo385@gmail.com</a></div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="ic-icon">🕐</div>
+                        <div class="ic-body">
+                            <div class="ic-label">Время ответа</div>
+                            <div class="ic-value">Пн–Пт, 10:00–19:00 МСК<br>Обычно в течение 24 часов</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="ic-icon">🌐</div>
+                        <div class="ic-body">
+                            <div class="ic-label">Официальный сайт F1</div>
+                            <div class="ic-value"><a href="https://www.formula1.com" target="_blank" rel="noopener">formula1.com</a></div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="ic-icon">📱</div>
+                        <div class="ic-body">
+                            <div class="ic-label">Мы в соцсетях</div>
+                            <div class="ic-value">
+                                <div class="socials">
+                                    <a href="#" class="social-btn">VK</a>
+                                    <a href="#" class="social-btn">Telegram</a>
+                                    <a href="#" class="social-btn">YouTube</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right: contact form -->
+                <div>
+                    <div id="form-wrap">
+                        <form class="contact-form" id="contact-form" novalidate>
+
+                            <div class="field" id="cf-field-name">
+                                <label for="cf-name">Ваше имя</label>
+                                <input type="text" id="cf-name" placeholder="Льюис Гамильтон">
+                                <span class="err-msg">Введите имя</span>
+                            </div>
+
+                            <div class="field" id="cf-field-email">
+                                <label for="cf-email">Email</label>
+                                <input type="email" id="cf-email" placeholder="you@example.com">
+                                <span class="err-msg">Введите корректный email</span>
+                            </div>
+
+                            <div class="field" id="cf-field-subject">
+                                <label for="cf-subject">Тема</label>
+                                <select id="cf-subject">
+                                    <option value="">— Выберите тему —</option>
+                                    <option value="question">Вопрос</option>
+                                    <option value="bug">Ошибка на сайте</option>
+                                    <option value="suggest">Предложение</option>
+                                    <option value="partnership">Сотрудничество</option>
+                                    <option value="other">Другое</option>
+                                </select>
+                                <span class="err-msg">Выберите тему</span>
+                            </div>
+
+                            <div class="field" id="cf-field-message">
+                                <label for="cf-message">Сообщение</label>
+                                <textarea id="cf-message" rows="5" placeholder="Напишите ваше сообщение..."></textarea>
+                                <span class="err-msg">Введите сообщение</span>
+                            </div>
+
+                            <button type="submit" class="btn-send" id="send-btn">Отправить</button>
+                        </form>
+                    </div>
+
+                    <div class="send-success" id="send-success">
+                        <div class="icon">✅</div>
+                        <h3>Сообщение отправлено!</h3>
+                        <p>Мы свяжемся с вами в ближайшее время.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Формула‑1. Все права защищены.</p>
+        <p>Данные получены из официального источника: <a href="https://www.formula1.com">formula1.com</a></p>
+    </footer>
+
+    <script src="scripts.js"></script>
+    <script>
+        /* ── Nav dropdown ── */
+        const btn = document.querySelector(".nav-menu-btn");
+        const dropdown = document.getElementById("nav-dropdown");
+        btn.addEventListener("click", () => {
+            const isOpen = dropdown.classList.toggle("open");
+            btn.setAttribute("aria-expanded", isOpen);
+        });
+        document.addEventListener("click", e => {
+            if (!e.target.closest(".nav")) {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+            }
+        });
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+            }
+        });
+
+        /* ── Contact form ── */
+        const form      = document.getElementById("contact-form");
+        const sendBtn   = document.getElementById("send-btn");
+        const formWrap  = document.getElementById("form-wrap");
+        const success   = document.getElementById("send-success");
+
+        function fieldErr(id, show) {
+            const w = document.getElementById("cf-field-" + id);
+            if (!w) return;
+            w.classList.toggle("has-error", show);
+            const el = w.querySelector("input, select, textarea");
+            if (el) el.classList.toggle("error", show);
+        }
+
+        function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            let ok = true;
+
+            const name    = document.getElementById("cf-name").value.trim();
+            const email   = document.getElementById("cf-email").value.trim();
+            const subject = document.getElementById("cf-subject").value;
+            const message = document.getElementById("cf-message").value.trim();
+
+            if (name.length < 2)    { fieldErr("name", true);    ok = false; } else fieldErr("name", false);
+            if (!isEmail(email))    { fieldErr("email", true);   ok = false; } else fieldErr("email", false);
+            if (!subject)           { fieldErr("subject", true);  ok = false; } else fieldErr("subject", false);
+            if (message.length < 10){ fieldErr("message", true); ok = false; } else fieldErr("message", false);
+
+            if (!ok) return;
+
+            sendBtn.disabled = true;
+            sendBtn.textContent = "Отправляем…";
+
+            setTimeout(() => {
+                formWrap.style.display = "none";
+                success.style.display  = "block";
+            }, 700);
+        });
+    </script>
+</body>
+
+</html>

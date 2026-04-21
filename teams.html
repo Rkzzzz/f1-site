@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Команды 2026 — Формула‑1</title>
+    <link rel="stylesheet" href="coloring.css?v=2">
+    <style>
+        .nav { position: relative; }
+        .nav-menu-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: none; border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 6px; color: inherit; cursor: pointer;
+            font-size: 1rem; padding: 8px 16px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .nav-menu-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+        .nav-menu-btn .arrow { font-size: 0.7em; transition: transform 0.25s; display: inline-block; }
+        .nav-menu-btn[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+        .nav-dropdown {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            min-width: 200px; background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 1000;
+            overflow: hidden; animation: dropIn 0.2s ease;
+        }
+        .nav-dropdown.open { display: block; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown a {
+            display: block; padding: 11px 18px; text-decoration: none; color: inherit;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transition: background 0.15s, padding-left 0.15s; font-size: 0.95rem;
+        }
+        .nav-dropdown a:last-child { border-bottom: none; }
+        .nav-dropdown a:hover { background: rgba(255,255,255,0.08); padding-left: 24px; }
+
+        /* ── Page content ── */
+        .teams-wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 16px 64px;
+        }
+
+        .teams-wrap h1 {
+            margin-bottom: 32px;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .team-card {
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.02);
+            padding: 20px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .team-card:hover {
+            border-color: rgba(255,255,255,0.22);
+            transform: translateY(-3px);
+        }
+
+        .team-card .team-logo {
+            height: 40px;
+            margin-bottom: 12px;
+            object-fit: contain;
+        }
+
+        .team-card h2 {
+            font-size: 1.1rem;
+            margin: 0 0 12px;
+        }
+
+        .team-card p {
+            margin: 6px 0;
+            font-size: 0.9rem;
+            opacity: 0.75;
+            line-height: 1.5;
+        }
+
+        .team-card p b {
+            color: #e10600;
+        }
+
+        /* Team colors */
+        .team-card Ferrari { border-left: 4px solid #E8002D; }
+        .team-card.RedBull { border-left: 4px solid #3671C6; }
+        .team-card.McLaren { border-left: 4px solid #FF8000; }
+        .team-card.Mercedes { border-left: 4px solid #27F4D2; }
+        .team-card.Audi { border-left: 4px solid #000000; }
+        .team-card.AstonMartin { border-left: 4px solid #229971; }
+        .team-card.Alpine { border-left: 4px solid #0093CC; }
+        .team-card.Williams { border-left: 4px solid #64C4FF; }
+        .team-card.RB { border-left: 4px solid #6692FF; }
+        .team-card.Haas { border-left: 4px solid #B6BABD; }
+        .team-card.Cadillac { border-left: 4px solid #FFD700; }
+
+        @media (max-width: 600px) {
+            .teams-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="index.html"><img src="images/f1 logo.jpg" alt="Формула‑1" width="120"></a>
+        </div>
+        <nav class="nav">
+            <button class="nav-menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown">
+                Меню <span class="arrow">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown" role="menu">
+                <a href="index.html" role="menuitem">Главная</a>
+                <a href="register.html" role="menuitem">Регистрация\ Авторизация</a>
+                <a href="calendar.html" role="menuitem">Календарь</a>
+                <a href="pilots.html" role="menuitem">Пилоты</a>
+                <a href="teams.html" role="menuitem">Команды</a>
+                <a href="result.html" role="menuitem">Результаты</a>
+                <a href="circitc.html" role="menuitem">Трассы</a>
+                <a href="about.html" role="menuitem">О нас</a>
+                <a href="contacts.html" role="menuitem">Контакты</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="teams-wrap">
+            <h1>Команды и пилоты сезона 2026</h1>
+            <div class="teams-grid">
+
+                <div class="team-card" style="border-left: 4px solid #E8002D;">
+                    <img src="teams/ferrari.png" alt="Ferrari" class="team-logo">
+                    <h2>Scuderia Ferrari</h2>
+                    <p><b>Пилоты:</b> Льюис Хэмилтон (#44), Шарль Леклер (#16)</p>
+                    <p><b>Мотор:</b> Ferrari</p>
+                    <p>Начало легендарного союза Хэмилтона и Скудерии. Команда нацелена на возвращение титула в Маранелло под новый регламент.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #3671C6;">
+                    <img src="teams/redbull.png" alt="Red Bull" class="team-logo">
+                    <h2>Oracle Red Bull Racing</h2>
+                    <p><b>Пилоты:</b> Макс Ферстаппен (#3), Исак Хаджар (#15)</p>
+                    <p><b>Мотор:</b> Red Bull Ford</p>
+                    <p>Эра собственных двигателей в партнерстве с Ford. Макс Ферстаппен продолжает защищать статус чемпиона.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #FF8000;">
+                    <img src="teams/mclaren.png" alt="McLaren" class="team-logo">
+                    <h2>McLaren Formula 1 Team</h2>
+                    <p><b>Пилоты:</b> Ландо Норрис (#1), Оскар Пиастри (#81)</p>
+                    <p><b>Мотор:</b> Mercedes</p>
+                    <p>Самый стабильный состав пилотов последних лет. Команда из Уокинга — один из главных фаворитов сезона.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #27F4D2;">
+                    <img src="teams/mercedes.png" alt="Mercedes" class="team-logo">
+                    <h2>Mercedes-AMG PETRONAS</h2>
+                    <p><b>Пилоты:</b> Джордж Расселл (#63), Кими Антонелли (#12)</p>
+                    <p><b>Мотор:</b> Mercedes</p>
+                    <p>Новая глава после ухода Хэмилтона. Ставка на молодого таланта Антонелли и лидерство Расселла.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #000000;">
+                    <img src="teams/audi.png" alt="Audi" class="team-logo">
+                    <h2>Audi F1 Team</h2>
+                    <p><b>Пилоты:</b> Нико Хюлькенберг (#27), Габриэль Бортолето (#5)</p>
+                    <p><b>Мотор:</b> Audi</p>
+                    <p>Дебютный сезон немецкого гиганта. Полностью заводская команда с собственной силовой установкой.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #229971;">
+                    <img src="teams/aston.png" alt="Aston Martin" class="team-logo">
+                    <h2>Aston Martin Aramco</h2>
+                    <p><b>Пилоты:</b> Фернандо Алонсо (#14), Лэнс Стролл (#18)</p>
+                    <p><b>Мотор:</b> Honda</p>
+                    <p>Начало эксклюзивного партнерства с Honda. Команда использует свои новые мощности в Сильверстоуне.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #0093CC;">
+                    <img src="teams/alpine.png" alt="Alpine" class="team-logo">
+                    <h2>Alpine F1 Team</h2>
+                    <p><b>Пилоты:</b> Пьер Гасли (#10), Франко Колапинто (#43)</p>
+                    <p><b>Мотор:</b> Mercedes</p>
+                    <p>Переход на клиентские моторы Mercedes и обновление технического штаба для борьбы в середине пелотона.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #64C4FF;">
+                    <img src="teams/williams.png" alt="Williams" class="team-logo">
+                    <h2>Williams Racing</h2>
+                    <p><b>Пилоты:</b> Алекс Албон (#23), Карлос Сайнс (#55)</p>
+                    <p><b>Мотор:</b> Mercedes</p>
+                    <p>Один из сильнейших составов пилотов. Сайнс и Албон ведут историческую команду обратно к вершинам.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #6692FF;">
+                    <img src="teams/vcarb.png" alt="VCARB" class="team-logo">
+                    <h2>Visa Cash App RB</h2>
+                    <p><b>Пилоты:</b> Лиам Лоусон (#30), Арвид Линдблад (#41)</p>
+                    <p><b>Мотор:</b> Red Bull Ford</p>
+                    <p>Молодежная команда системы Red Bull, нацеленная на регулярные очки и развитие талантов.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #B6BABD;">
+                    <img src="teams/haas.png" alt="Haas" class="team-logo">
+                    <h2>MoneyGram Haas F1 Team</h2>
+                    <p><b>Пилоты:</b> Эстебан Окон (#31), Оливер Берман (#87)</p>
+                    <p><b>Мотор:</b> Ferrari</p>
+                    <p>Новый этап с опытным Оконом и перспективным Берманом. Плотное техническое сотрудничество с Ferrari сохраняется.</p>
+                </div>
+
+                <div class="team-card" style="border-left: 4px solid #FFD700;">
+                    <img src="teams/cadillac.png" alt="Cadillac" class="team-logo">
+                    <h2>Cadillac Formula 1 Team</h2>
+                    <p><b>Пилоты:</b> Серхио Перес (#11), Валтери Боттас (#77)</p>
+                    <p><b>Мотор:</b> Ferrari</p>
+                    <p>Новое имя в Формуле-1. Американский гигант вступает в чемпионат с целью составить конкуренцию европейским топ-командам.</p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Формула‑1. Все права защищены.</p>
+        <p>Данные получены из официального источника: <a href="https://www.formula1.com">formula1.com</a></p>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body> 
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новости Формулы‑1</title>
+    <link rel="stylesheet" href="coloring.css?v=2">
+    <style>
+        /* ── Nav dropdown ── */
+        .nav { position: relative; }
+        .nav-menu-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: none; border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 6px; color: inherit; cursor: pointer;
+            font-size: 1rem; padding: 8px 16px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .nav-menu-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+        .nav-menu-btn .arrow { font-size: 0.7em; transition: transform 0.25s; display: inline-block; }
+        .nav-menu-btn[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+        .nav-dropdown {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            min-width: 200px; background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 1000;
+            overflow: hidden; animation: dropIn 0.2s ease;
+        }
+        .nav-dropdown.open { display: block; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown a {
+            display: block; padding: 11px 18px; text-decoration: none; color: inherit;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transition: background 0.15s, padding-left 0.15s; font-size: 0.95rem;
+        }
+        .nav-dropdown a:last-child { border-bottom: none; }
+        .nav-dropdown a:hover { background: rgba(255,255,255,0.08); padding-left: 24px; }
+
+        /* ── Page ── */
+        .main-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 16px 64px; }
+
+        /* ── Top bar ── */
+        .news-topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 12px; margin-bottom: 24px;
+        }
+        .news-topbar h1 { margin: 0; font-size: clamp(1.4rem, 3vw, 2rem); }
+
+        .source-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .source-tab {
+            background: none; border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px; color: inherit; cursor: pointer;
+            font-size: 0.8rem; padding: 5px 14px; opacity: 0.55;
+            transition: all 0.2s;
+        }
+        .source-tab:hover { opacity: 0.85; border-color: rgba(255,255,255,0.35); }
+        .source-tab.active { background: #e10600; border-color: #e10600; opacity: 1; color: #fff; }
+
+        /* ── Status ── */
+        .news-status {
+            font-size: 0.78rem; opacity: 0.4; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .status-dot {
+            width: 7px; height: 7px; border-radius: 50%; background: #888; flex-shrink: 0;
+        }
+        .status-dot.loading { background: #f59e0b; animation: pulse 1s infinite; }
+        .status-dot.ok      { background: #22c55e; }
+        .status-dot.error   { background: #e10600; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        /* ── GNews hint ── */
+        .api-hint {
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+            padding: 14px 18px; font-size: 0.8rem; opacity: 0.7;
+            margin-bottom: 18px; line-height: 1.7; display: none;
+        }
+        .api-hint a { color: inherit; }
+        .api-hint input {
+            margin: 6px 0 0; display: block; width: 100%; max-width: 380px;
+            padding: 7px 12px; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.18); border-radius: 5px;
+            color: inherit; font-size: 0.82rem; outline: none;
+        }
+        .api-hint button {
+            margin-top: 8px; padding: 6px 18px; background: #e10600;
+            border: none; border-radius: 5px; color: #fff;
+            font-size: 0.82rem; cursor: pointer;
+        }
+
+        /* ── Live block ── */
+        .live-block {
+            border: 1px solid rgba(225,6,0,0.3); border-radius: 10px;
+            padding: 16px 20px; margin-bottom: 24px;
+            background: rgba(225,6,0,0.05); display: none;
+        }
+        .live-block.visible { display: block; }
+        .live-label {
+            font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.5px;
+            color: #e10600; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .live-dot { width:7px;height:7px;border-radius:50%;background:#e10600;animation:pulse 1.2s infinite; }
+        .live-sessions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .live-card {
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 7px;
+            padding: 10px 14px; font-size: 0.82rem; min-width: 180px;
+        }
+        .live-card b { display: block; margin-bottom: 2px; }
+        .live-card span { opacity: 0.5; font-size: 0.75rem; }
+
+        /* ── News grid ── */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        /* ── News card ── */
+        .news-card {
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+            overflow: hidden; background: rgba(255,255,255,0.02);
+            display: flex; flex-direction: column; text-decoration: none; color: inherit;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+        .news-card:hover {
+            border-color: rgba(255,255,255,0.22);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+        }
+        .nc-img {
+            width: 100%; height: 165px; object-fit: cover; display: block;
+            background: rgba(255,255,255,0.04);
+        }
+        .nc-placeholder {
+            height: 165px; display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; background: rgba(255,255,255,0.03);
+        }
+        .nc-body { padding: 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 7px; }
+        .nc-meta { display: flex; align-items: center; gap: 8px; font-size: 0.71rem; opacity: 0.45; flex-wrap: wrap; }
+        .nc-source {
+            background: rgba(225,6,0,0.14); color: #e10600;
+            border-radius: 3px; padding: 2px 7px; font-weight: 600; opacity: 1;
+        }
+        .nc-title { font-size: 0.9rem; font-weight: 600; line-height: 1.4; flex: 1; }
+        .nc-arrow { font-size: 0.72rem; opacity: 0.25; align-self: flex-end; transition: opacity 0.2s; }
+        .news-card:hover .nc-arrow { opacity: 0.65; }
+
+        /* ── Skeleton ── */
+        .skeleton { border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); overflow: hidden; }
+        .sk-img { height: 165px; background: rgba(255,255,255,0.05); }
+        .sk-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+        .sk-line {
+            height: 11px; border-radius: 4px;
+            background: linear-gradient(90deg,rgba(255,255,255,0.05) 25%,rgba(255,255,255,0.1) 50%,rgba(255,255,255,0.05) 75%);
+            background-size: 200% 100%; animation: shimmer 1.4s infinite;
+        }
+        .sk-line.s { width: 38%; }
+        .sk-line.m { width: 68%; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+        /* ── Error ── */
+        .news-empty {
+            grid-column: 1 / -1; text-align: center;
+            padding: 48px 16px; opacity: 0.5;
+        }
+        .news-empty .ei { font-size: 2.5rem; margin-bottom: 12px; }
+        .news-empty p { font-size: 0.9rem; line-height: 1.7; }
+        .news-empty a { color: inherit; }
+
+        @media (max-width: 600px) {
+            .news-grid { grid-template-columns: 1fr; }
+            .news-topbar { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="images/f1 logo.jpg" alt="Формула‑1" width="120">
+        </div>
+        <nav class="nav">
+            <button class="nav-menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown">
+                Меню <span class="arrow">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown" role="menu">
+                <a href="index.html" role="menuitem">Главная</a>
+                <a href="register.html" role="menuitem">Регистрация\ Авторизация</a>
+                <a href="calendar.html" role="menuitem">Календарь</a>
+                <a href="pilots.html" role="menuitem">Пилоты</a>
+                <a href="teams.html" role="menuitem">Команды</a>
+                <a href="result.html" role="menuitem">Результаты</a>
+                <a href="circitc.html" role="menuitem">Трассы</a>
+                <a href="about.html" role="menuitem">О нас</a>
+                <a href="contacts.html" role="menuitem">Контакты</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="main-wrap">
+
+            <!-- Live session banner (OpenF1) -->
+            <div class="live-block" id="live-block">
+                <div class="live-label"><span class="live-dot"></span> Идёт прямо сейчас</div>
+                <div class="live-sessions" id="live-sessions"></div>
+            </div>
+
+            <!-- Top bar -->
+            <div class="news-topbar">
+                <h1>Последние новости Формулы‑1</h1>
+                <div class="source-tabs">
+                    <button class="source-tab active" data-src="rss">🌐 Google News</button>
+                    <button class="source-tab" data-src="gnews">📰 GNews API</button>
+                    <button class="source-tab" data-src="openf1">🏎 OpenF1</button>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="news-status">
+                <span class="status-dot loading" id="sdot"></span>
+                <span id="stxt">Загружаем новости…</span>
+            </div>
+
+            <!-- GNews key input (shown only for gnews tab) -->
+            <div class="api-hint" id="gnews-hint">
+                🔑 <strong>GNews API</strong> требует бесплатный ключ (100 запросов/день).<br>
+                Зарегистрируйтесь на <a href="https://gnews.io" target="_blank">gnews.io</a> — это бесплатно.
+                <input id="gkey-input" type="text" placeholder="Вставьте ваш GNews API-ключ…">
+                <button onclick="saveGKey()">Сохранить и загрузить</button>
+            </div>
+
+            <!-- News container -->
+            <div id="news-container" class="news-grid"></div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Формула‑1. Все права защищены.</p>
+        <p>Данные получены из официального источника: <a href="https://www.formula1.com">formula1.com</a></p>
+    </footer>
+
+    <script src="scripts.js"></script>
+    <script>
+    'use strict';
+
+    /* ── Nav ── */
+    const navBtn = document.querySelector('.nav-menu-btn');
+    const navDrop = document.getElementById('nav-dropdown');
+    navBtn.addEventListener('click', () => {
+        const o = navDrop.classList.toggle('open');
+        navBtn.setAttribute('aria-expanded', o);
+    });
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.nav')) { navDrop.classList.remove('open'); navBtn.setAttribute('aria-expanded', false); }
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { navDrop.classList.remove('open'); navBtn.setAttribute('aria-expanded', false); }
+    });
+
+    /* ── DOM ── */
+    const container  = document.getElementById('news-container');
+    const sdot       = document.getElementById('sdot');
+    const stxt       = document.getElementById('stxt');
+    const gnewsHint  = document.getElementById('gnews-hint');
+    let   curSrc     = 'rss';
+
+    /* ── Tabs ── */
+    document.querySelectorAll('.source-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.source-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            curSrc = tab.dataset.src;
+            gnewsHint.style.display = curSrc === 'gnews' ? 'block' : 'none';
+            load(curSrc);
+        });
+    });
+
+    /* ── Helpers ── */
+    const setStatus = (state, txt) => { sdot.className = 'status-dot ' + state; stxt.textContent = txt; };
+
+    const fmtDate = str => {
+        if (!str) return '';
+        try { return new Date(str).toLocaleDateString('ru-RU', { day:'numeric', month:'short', year:'numeric' }); }
+        catch { return str; }
+    };
+
+    function skeletons(n = 6) {
+        container.innerHTML = Array.from({length: n}, () =>
+            `<div class="skeleton"><div class="sk-img"></div><div class="sk-body">
+             <div class="sk-line s"></div><div class="sk-line"></div>
+             <div class="sk-line m"></div></div></div>`
+        ).join('');
+    }
+
+    function renderCards(arts) {
+        if (!arts?.length) {
+            container.innerHTML = `<div class="news-empty"><div class="ei">🏁</div>
+                <p>Новости не найдены.<br>Попробуйте другой источник или зайдите позже.</p></div>`;
+            return;
+        }
+        container.innerHTML = arts.map(a => {
+            const imgPart = a.image
+                ? `<img class="nc-img" src="${a.image}" alt="" loading="lazy"
+                       onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'nc-placeholder',textContent:'🏎'}))">`
+                : `<div class="nc-placeholder">🏎</div>`;
+            return `<a class="news-card" href="${a.url||'#'}" target="_blank" rel="noopener">
+                ${imgPart}
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <span class="nc-source">${a.src||'F1'}</span>
+                        <span>${fmtDate(a.date)}</span>
+                    </div>
+                    <div class="nc-title">${a.title}</div>
+                    ${a.desc ? `<div class="nc-desc">${a.desc}</div>` : ''}
+                    <div class="nc-arrow">Читать →</div>
+                </div>
+            </a>`;
+        }).join('');
+    }
+
+    /* ════════════════════════════════
+       SOURCE 1 — Google News RSS
+       Полностью бесплатно, без ключа
+    ════════════════════════════════ */
+    async function fromRSS() {
+        const q    = encodeURIComponent('Formula 1 F1 Гран-при 2026');
+        const rss  = `https://news.google.com/rss/search?q=${q}&hl=ru&gl=RU&ceid=RU:ru`;
+        const url  = `https://api.allorigins.win/get?url=${encodeURIComponent(rss)}`;
+        const r    = await fetch(url, { signal: AbortSignal.timeout(12000) });
+        if (!r.ok) throw new Error('proxy');
+        const { contents } = await r.json();
+        const doc  = new DOMParser().parseFromString(contents, 'text/xml');
+        const items = Array.from(doc.querySelectorAll('item')).slice(0, 20);
+        return items.map(it => {
+            const rawDesc = it.querySelector('description')?.textContent || '';
+            const urlM    = rawDesc.match(/href="([^"]+)"/);
+            // Google News actual article URL is inside <a href="...">
+            const url     = urlM ? urlM[1] : (it.querySelector('guid')?.textContent || '#');
+            // Try to get image from <figure> or <img> in description
+            const imgM    = rawDesc.match(/<img[^>]+src="([^"]+)"/);
+            const desc    = rawDesc.replace(/<[^>]+>/g, '').trim().slice(0, 200);
+            return {
+                title : (it.querySelector('title')?.textContent || '').replace(/ - .*$/, '').trim(),
+                url,
+                desc,
+                date  : it.querySelector('pubDate')?.textContent || '',
+                src   : it.querySelector('source')?.textContent || 'Google News',
+                image : imgM ? imgM[1] : null,
+            };
+        }).filter(a => a.title.length > 4);
+    }
+
+    /* ════════════════════════════════
+       SOURCE 2 — GNews API
+       Бесплатно: 100 запросов/день
+       Ключ: https://gnews.io
+    ════════════════════════════════ */
+    const getGKey = () => localStorage.getItem('f1_gn_key') || '';
+    function saveGKey() {
+        const k = document.getElementById('gkey-input').value.trim();
+        if (!k) return;
+        localStorage.setItem('f1_gn_key', k);
+        load('gnews');
+    }
+    window.saveGKey = saveGKey;
+
+    async function fromGNews() {
+        const key = getGKey();
+        if (!key) throw Object.assign(new Error('NO_KEY'), { code: 'NO_KEY' });
+        // Try English and Russian
+        const url = `https://gnews.io/api/v4/search?q=Formula+1&lang=en&max=20&apikey=${key}`;
+        const r = await fetch(url, { signal: AbortSignal.timeout(12000) });
+        if (r.status === 401 || r.status === 403) throw Object.assign(new Error('BAD_KEY'), { code: 'BAD_KEY' });
+        if (!r.ok) throw new Error('gnews ' + r.status);
+        const data = await r.json();
+        if (!data.articles?.length) throw new Error('EMPTY');
+        return data.articles.map(a => ({
+            title : a.title,
+            url   : a.url,
+            desc  : a.description || '',
+            date  : a.publishedAt,
+            src   : a.source?.name || 'GNews',
+            image : a.image || null,
+        }));
+    }
+
+    /* ════════════════════════════════
+       SOURCE 3 — OpenF1 API
+       Полностью бесплатно, без ключа
+       Данные: гонки, квалификации, события сезона
+    ════════════════════════════════ */
+    async function fromOpenF1() {
+        const now = new Date();
+        const [mR, sR] = await Promise.all([
+            fetch('https://api.openf1.org/v1/meetings?year=2026', { signal: AbortSignal.timeout(12000) }),
+            fetch('https://api.openf1.org/v1/sessions?year=2026',  { signal: AbortSignal.timeout(12000) }),
+        ]);
+        const meetings = mR.ok ? await mR.json() : [];
+        const sessions = sR.ok ? await sR.json() : [];
+
+        const mtg = key => meetings.find(m => m.meeting_key === key) || {};
+        const cards = [];
+
+        // Completed race sessions
+        sessions
+            .filter(s => s.session_name === 'Race' && new Date(s.date_end) < now)
+            .sort((a,b) => new Date(b.date_start) - new Date(a.date_start))
+            .slice(0, 10)
+            .forEach(s => {
+                const m = mtg(s.meeting_key);
+                cards.push({
+                    title : `🏁 Гонка завершена: ${s.meeting_name}`,
+                    url   : 'https://www.formula1.com/en/results/2026',
+                    desc  : `${m.location || ''}, ${m.country_name || ''}. ${fmtDate(s.date_start)}`,
+                    date  : s.date_start,
+                    src   : 'OpenF1',
+                    image : m.circuit_image ? m.circuit_image.replace('http:','https:') : null,
+                });
+            });
+
+        // Upcoming races
+        sessions
+            .filter(s => s.session_name === 'Race' && new Date(s.date_start) > now)
+            .sort((a,b) => new Date(a.date_start) - new Date(b.date_start))
+            .slice(0, 5)
+            .forEach(s => {
+                const m = mtg(s.meeting_key);
+                cards.push({
+                    title : `📅 Следующая гонка: ${s.meeting_name}`,
+                    url   : 'https://www.formula1.com/en/racing/2026',
+                    desc  : `${m.location || ''}, ${m.country_name || ''}. Старт: ${fmtDate(s.date_start)}`,
+                    date  : s.date_start,
+                    src   : 'OpenF1',
+                    image : m.circuit_image ? m.circuit_image.replace('http:','https:') : null,
+                });
+            });
+
+        // Qualifying sessions
+        sessions
+            .filter(s => s.session_name === 'Qualifying' && new Date(s.date_end) < now)
+            .sort((a,b) => new Date(b.date_start) - new Date(a.date_start))
+            .slice(0, 6)
+            .forEach(s => {
+                const m = mtg(s.meeting_key);
+                cards.push({
+                    title : `⏱ Квалификация: ${s.meeting_name}`,
+                    url   : 'https://www.formula1.com/en/results/2026',
+                    desc  : `${m.location || ''}, ${fmtDate(s.date_start)}`,
+                    date  : s.date_start,
+                    src   : 'OpenF1',
+                    image : m.circuit_image ? m.circuit_image.replace('http:','https:') : null,
+                });
+            });
+
+        // Sprint sessions
+        sessions
+            .filter(s => s.session_name === 'Sprint' && new Date(s.date_end) < now)
+            .sort((a,b) => new Date(b.date_start) - new Date(a.date_start))
+            .slice(0, 4)
+            .forEach(s => {
+                const m = mtg(s.meeting_key);
+                cards.push({
+                    title : `⚡ Спринт: ${s.meeting_name}`,
+                    url   : 'https://www.formula1.com/en/results/2026',
+                    desc  : `${m.location || ''}, ${fmtDate(s.date_start)}`,
+                    date  : s.date_start,
+                    src   : 'OpenF1',
+                    image : m.circuit_image ? m.circuit_image.replace('http:','https:') : null,
+                });
+            });
+
+        if (!cards.length) throw new Error('EMPTY');
+
+        // Live session banner
+        const active = sessions.filter(s =>
+            new Date(s.date_start) <= now && new Date(s.date_end) >= now
+        );
+        if (active.length) {
+            const lb = document.getElementById('live-block');
+            const ls = document.getElementById('live-sessions');
+            lb.classList.add('visible');
+            ls.innerHTML = active.map(s => {
+                const m = mtg(s.meeting_key);
+                return `<div class="live-card">
+                    <b>${s.session_name} · ${s.meeting_name}</b>
+                    <span>${m.location||''}, ${m.country_name||''}</span>
+                </div>`;
+            }).join('');
+        }
+
+        return cards.sort((a,b) => new Date(b.date) - new Date(a.date));
+    }
+
+    /* ════════════════════════════════
+       MAIN LOAD — выбор источника + fallback
+    ════════════════════════════════ */
+    async function load(src) {
+        skeletons();
+        setStatus('loading', 'Загружаем новости…');
+        try {
+            let arts = [];
+            if (src === 'rss') {
+                setStatus('loading', 'Google News RSS…');
+                arts = await fromRSS();
+                setStatus('ok', `${arts.length} новостей · Google News · ${new Date().toLocaleTimeString('ru-RU')}`);
+            } else if (src === 'gnews') {
+                const k = getGKey();
+                if (!k) {
+                    gnewsHint.style.display = 'block';
+                    container.innerHTML = `<div class="news-empty">
+                        <div class="ei">🔑</div>
+                        <p>Для GNews API нужен бесплатный ключ.<br>
+                        Введите его в поле выше.<br>
+                        Регистрация на <a href="https://gnews.io" target="_blank">gnews.io</a> — 1 минута.</p>
+                    </div>`;
+                    setStatus('error', 'Нет ключа GNews');
+                    return;
+                }
+                setStatus('loading', 'GNews API…');
+                arts = await fromGNews();
+                setStatus('ok', `${arts.length} новостей · GNews API`);
+            } else if (src === 'openf1') {
+                setStatus('loading', 'OpenF1 API — данные сезона 2026…');
+                arts = await fromOpenF1();
+                setStatus('ok', `${arts.length} событий · OpenF1 API (без ключа)`);
+            }
+            renderCards(arts);
+        } catch (err) {
+            console.warn('[F1 News] error:', err.message);
+            if (err.code === 'BAD_KEY') {
+                setStatus('error', 'Неверный ключ GNews');
+                container.innerHTML = `<div class="news-empty">
+                    <div class="ei">🔑</div>
+                    <p>Ключ GNews недействителен. Проверьте правильность или получите новый на <a href="https://gnews.io" target="_blank">gnews.io</a>.</p>
+                </div>`;
+                return;
+            }
+            // Auto-fallback to RSS
+            if (src !== 'rss') {
+                setStatus('loading', 'Резервный источник — Google News RSS…');
+                try {
+                    const fb = await fromRSS();
+                    renderCards(fb);
+                    setStatus('ok', `Резервно: ${fb.length} новостей · Google News RSS`);
+                    return;
+                } catch {}
+            }
+            setStatus('error', 'Ошибка загрузки');
+            container.innerHTML = `<div class="news-empty">
+                <div class="ei">📡</div>
+                <p>Не удалось загрузить новости.<br>Проверьте интернет-соединение или попробуйте другой источник.</p>
+            </div>`;
+        }
+    }
+
+    /* ── Live session check at startup ── */
+    async function checkLive() {
+        try {
+            const [sR, mR] = await Promise.all([
+                fetch('https://api.openf1.org/v1/sessions?year=2026'),
+                fetch('https://api.openf1.org/v1/meetings?year=2026'),
+            ]);
+            if (!sR.ok || !mR.ok) return;
+            const sessions = await sR.json();
+            const meetings = await mR.json();
+            const now = new Date();
+            const active = sessions.filter(s =>
+                new Date(s.date_start) <= now && new Date(s.date_end) >= now
+            );
+            if (!active.length) return;
+            const lb = document.getElementById('live-block');
+            const ls = document.getElementById('live-sessions');
+            lb.classList.add('visible');
+            ls.innerHTML = active.map(s => {
+                const m = meetings.find(x => x.meeting_key === s.meeting_key) || {};
+                return `<div class="live-card">
+                    <b>${s.session_name} · ${s.meeting_name}</b>
+                    <span>${m.location||''}, ${m.country_name||''}</span>
+                </div>`;
+            }).join('');
+        } catch {}
+    }
+
+    // ── Init ──
+    load('rss');
+    checkLive();
+    </script>
+</body>
+
+</html>

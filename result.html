@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты — Формула‑1</title>
+    <link rel="stylesheet" href="coloring.css?v=2">
+    <style>
+        .nav { position: relative; }
+        .nav-menu-btn { display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(255,255,255,.25);border-radius:6px;color:inherit;cursor:pointer;font-size:1rem;padding:8px 16px;transition:background .2s,border-color .2s; }
+        .nav-menu-btn:hover { background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5); }
+        .nav-menu-btn .arrow { font-size:.7em;transition:transform .25s;display:inline-block; }
+        .nav-menu-btn[aria-expanded="true"] .arrow { transform:rotate(180deg); }
+        .nav-dropdown { display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:200px;background:#1a1a1a;border:1px solid rgba(255,255,255,.12);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.6);z-index:1000;overflow:hidden;animation:dropIn .2s ease; }
+        .nav-dropdown.open { display:block; }
+        @keyframes dropIn { from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)} }
+        .nav-dropdown a { display:block;padding:11px 18px;text-decoration:none;color:inherit;border-bottom:1px solid rgba(255,255,255,.07);transition:background .15s,padding-left .15s;font-size:.95rem; }
+        .nav-dropdown a:last-child { border-bottom:none; }
+        .nav-dropdown a:hover { background:rgba(255,255,255,.08);padding-left:24px; }
+    </style>
+</head>
+<body data-page="result">
+
+    <header class="header">
+        <div class="logo">
+            <a href="index.html"><img src="https://resources.formulaf1.com/assets/images/logo.png" alt="Формула‑1" width="120"></a>
+        </div>
+        <nav class="nav">
+            <button class="nav-menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown">
+                Меню <span class="arrow">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown" role="menu">
+                <a href="index.html">Главная</a>
+                <a href="auth.php?page=login">Войти</a>
+                <a href="calendar.html">Календарь</a>
+                <a href="pilots.html">Пилоты</a>
+                <a href="teams.html">Команды</a>
+                <a href="result.html">Результаты</a>
+                <a href="circitc.html">Трассы</a>
+                <a href="about.html">О нас</a>
+                <a href="contacts.html">Контакты</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="results-header">
+        <!-- data-page + data-key = этот текст редактор может изменить -->
+        <p style="color:#e10600;font-weight:bold;margin-bottom:5px"
+           data-page="result" data-key="race_round">ROUND 03 — JAPAN</p>
+        <h1 data-page="result" data-key="race_title">Гран-при Японии 2026</h1>
+    </section>
+
+    <main class="main">
+        <div class="results-table-container">
+            <table class="f1-table">
+                <thead>
+                    <tr>
+                        <th>Поз</th><th>Пилот</th><th>Команда</th>
+                        <th>Время / Сход</th><th style="text-align:right">Очки</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="team-lightblue">
+                        <td class="pos">1</td>
+                        <td class="driver-name" data-page="result" data-key="p1_name">Kimi Antonelli</td>
+                        <td data-page="result" data-key="p1_team">Mercedes AMG Petronas</td>
+                        <td data-page="result" data-key="p1_time">1:28:03.403</td>
+                        <td class="pts">25</td>
+                    </tr>
+                    <tr class="team-orange">
+                        <td class="pos">2</td>
+                        <td class="driver-name" data-page="result" data-key="p2_name">Oscar Piastri</td>
+                        <td data-page="result" data-key="p2_team">McLaren</td>
+                        <td data-page="result" data-key="p2_time">+13.722s</td>
+                        <td class="pts">18</td>
+                    </tr>
+                    <tr class="team-red">
+                        <td class="pos">3</td>
+                        <td class="driver-name" data-page="result" data-key="p3_name">Charles Leclerc</td>
+                        <td data-page="result" data-key="p3_team">Ferrari</td>
+                        <td data-page="result" data-key="p3_time">+15.270s</td>
+                        <td class="pts">15</td>
+                    </tr>
+                    <tr class="team-lightblue">
+                        <td class="pos">4</td>
+                        <td class="driver-name" data-page="result" data-key="p4_name">George Russell</td>
+                        <td data-page="result" data-key="p4_team">Mercedes AMG Petronas</td>
+                        <td data-page="result" data-key="p4_time">+15.574s</td>
+                        <td class="pts">12</td>
+                    </tr>
+                    <tr class="team-orange">
+                        <td class="pos">5</td>
+                        <td class="driver-name" data-page="result" data-key="p5_name">Lando Norris</td>
+                        <td data-page="result" data-key="p5_team">McLaren</td>
+                        <td data-page="result" data-key="p5_time">+23.479s</td>
+                        <td class="pts">10</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Формула‑1. Все права защищены.</p>
+        <p>Данные получены из официального источника: <a href="https://www.formula1.com">formula1.com</a></p>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — Формула‑1</title>
+    <link rel="stylesheet" href="coloring.css?v=2">
+    <style>
+        /* ── Nav dropdown ── */
+        .nav { position: relative; }
+        .nav-menu-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: none; border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 6px; color: inherit; cursor: pointer;
+            font-size: 1rem; padding: 8px 16px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .nav-menu-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+        .nav-menu-btn .arrow { font-size: 0.7em; transition: transform 0.25s; display: inline-block; }
+        .nav-menu-btn[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+        .nav-dropdown {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            min-width: 200px; background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 1000;
+            overflow: hidden; animation: dropIn 0.2s ease;
+        }
+        .nav-dropdown.open { display: block; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown a {
+            display: block; padding: 11px 18px; text-decoration: none; color: inherit;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transition: background 0.15s, padding-left 0.15s; font-size: 0.95rem;
+        }
+        .nav-dropdown a:last-child { border-bottom: none; }
+        .nav-dropdown a:hover { background: rgba(255,255,255,0.08); padding-left: 24px; }
+
+        /* ── Login form layout ── */
+        .login-wrap {
+            max-width: 420px;
+            margin: 48px auto;
+            padding: 0 16px;
+        }
+
+        .login-wrap h1 { margin-bottom: 24px; }
+
+        .login-form .field { margin-bottom: 18px; }
+
+        .login-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            opacity: 0.75;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: inherit;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        .login-form input:focus { border-color: rgba(255,255,255,0.45); }
+
+        .login-form input.error  { border-color: #e10600; }
+        .login-form input.valid { border-color: #22c55e; }
+
+        .err-msg { display: none; color: #e10600; font-size: 0.78rem; margin-top: 4px; }
+        .field.has-error .err-msg { display: block; }
+
+        /* Password toggle */
+        .pwd-wrap { position: relative; }
+        .pwd-wrap input { padding-right: 42px; }
+        .pwd-toggle {
+            position: absolute; right: 10px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none; color: inherit;
+            opacity: 0.5; cursor: pointer; font-size: 1rem; padding: 2px;
+            transition: opacity 0.2s;
+        }
+        .pwd-toggle:hover { opacity: 1; }
+
+        /* Remember & Forgot */
+        .form-options {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 22px; font-size: 0.85rem;
+        }
+        .remember-field {
+            display: flex; align-items: center; gap: 8px; opacity: 0.75;
+        }
+        .remember-field input { width: 15px; height: 15px; accent-color: #e10600; cursor: pointer; }
+        .forgot-link { color: inherit; opacity: 0.75; text-decoration: none; }
+        .forgot-link:hover { opacity: 1; text-decoration: underline; }
+
+        /* Submit */
+        .btn-submit {
+            width: 100%; padding: 12px; border: none; border-radius: 5px;
+            background: #e10600; color: #fff;
+            font-size: 1rem; font-family: inherit; font-weight: 600;
+            cursor: pointer; letter-spacing: 0.5px;
+            transition: background 0.2s, opacity 0.2s;
+        }
+        .btn-submit:hover  { background: #b80500; }
+        .btn-submit:active { opacity: 0.85; }
+        .btn-submit:disabled { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); cursor: not-allowed; }
+
+        .register-link { text-align: center; margin-top: 16px; font-size: 0.87rem; opacity: 0.6; }
+        .register-link a { color: inherit; }
+
+        /* Success */
+        .success-screen { display: none; text-align: center; padding: 48px 0; }
+        .success-screen .icon { font-size: 3rem; margin-bottom: 16px; }
+        .success-screen p { opacity: 0.7; margin-top: 8px; font-size: 0.9rem; }
+        .success-screen .back-btn {
+            display: inline-block; margin-top: 24px;
+            padding: 10px 28px; border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 5px; color: inherit; text-decoration: none;
+            font-size: 0.9rem; transition: background 0.2s;
+        }
+        .success-screen .back-btn:hover { background: rgba(255,255,255,0.07); }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="index.html"><img src="https://resources.formulaf1.com/assets/images/logo.png" alt="Формула‑1" width="120"></a>
+        </div>
+        <nav class="nav">
+            <button class="nav-menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown">
+                Меню <span class="arrow">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown" role="menu">
+                <a href="index.html" role="menuitem">Главная</a>
+                <a href="register.html" role="menuitem">Регистрация\ Авторизация</a>
+                <a href="calendar.html" role="menuitem">Календарь</a>
+                <a href="pilots.html" role="menuitem">Пилоты</a>
+                <a href="teams.html" role="menuitem">Команды</a>
+                <a href="result.html" role="menuitem">Результаты</a>
+                <a href="circitc.html" role="menuitem">Трассы</a>
+                <a href="about.html" role="menuitem">О нас</a>
+                <a href="contacts.html" role="menuitem">Контакты</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="login-wrap">
+
+            <div id="login-form-wrap">
+                <h1>Вход</h1>
+
+                <form class="login-form" id="login-form" novalidate>
+
+                    <div class="field" id="field-email">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
+                        <span class="err-msg">Введите корректный email</span>
+                    </div>
+                    
+                    <div class="field" id="field-password">
+                        <label for="password">Пароль</label>
+                        <div class="pwd-wrap">
+                            <input type="password" id="password" name="password" placeholder="Введите пароль" autocomplete="current-password">
+                            <button type="button" class="pwd-toggle" data-target="password">👁</button>
+                        </div>
+                        <span class="err-msg">Введите пароль</span>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-field">
+                            <input type="checkbox" name="remember">
+                            <span>Запомнить меня</span>
+                        </label>
+                        <a href="#" class="forgot-link">Забыли пароль?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submit-btn">Войти</button>
+                </form>
+
+                <p class="register-link">Нет аккаунта? <a href="register.html">Зарегистрироваться</a></p>
+            </div>
+
+            <div class="success-screen" id="success-screen">
+                <div class="icon">✅</div>
+                <h2>Добро пожаловать!</h2>
+                <p>Вы успешно вошли в систему.</p>
+                <a href="index.html" class="back-btn">На главную</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Формула‑1. Все права защищены.</p>
+        <p>Данные получены из официального источника: <a href="https://www.formula1.com">formula1.com</a></p>
+    </footer>
+
+<script src="scripts.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>

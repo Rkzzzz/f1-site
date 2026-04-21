@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трассы</title>
+    <link rel="stylesheet" href="coloring.css?v=2">
+    <style>
+        .nav { position: relative; }
+        .nav-menu-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: none; border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 6px; color: inherit; cursor: pointer;
+            font-size: 1rem; padding: 8px 16px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .nav-menu-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+        .nav-menu-btn .arrow { font-size: 0.7em; transition: transform 0.25s; display: inline-block; }
+        .nav-menu-btn[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+        .nav-dropdown {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            min-width: 200px; background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 1000;
+            overflow: hidden; animation: dropIn 0.2s ease;
+        }
+        .nav-dropdown.open { display: block; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown a {
+            display: block; padding: 11px 18px; text-decoration: none; color: inherit;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transition: background 0.15s, padding-left 0.15s; font-size: 0.95rem;
+        }
+        .nav-dropdown a:last-child { border-bottom: none; }
+        .nav-dropdown a:hover { background: rgba(255,255,255,0.08); padding-left: 24px; }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="index.html"><img src="https://resources.formulaf1.com/assets/images/logo.png" alt="Формула‑1" width="120"></a>
+        </div>
+                <nav class="nav">
+            <button class="nav-menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown">
+                Меню <span class="arrow">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown" role="menu">
+                <a href="index.html" role="menuitem">Главная</a>
+                <a href="register.html" role="menuitem">Регистрация\ Авторизация</a>
+                <a href="calendar.html" role="menuitem">Календарь</a>
+                <a href="pilots.html" role="menuitem">Пилоты</a>
+                <a href="teams.html" role="menuitem">Команды</a>
+                <a href="result.html" role="menuitem">Результаты</a>
+                <a href="circitc.html" role="menuitem">Трассы</a>
+                <a href="about.html" role="menuitem">О нас</a>
+                <a href="contacts.html" role="menuitem">Контакты</a>
+            </div>
+        </nav>
+    </header>
+
+<main class="main">
+        <h1>Трассы королевских гонок</h1>
+            <div class="circuit-container">
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/au.png"></div><div class="circuit-text"><h2>Альберт-Парк</h2><p>Мельбурн, Австралия. Открытие сезона 2026.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/cn.png"></div><div class="circuit-text"><h2>Шанхай</h2><p>Китай. Скоростная трасса с затяжными поворотами.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/jp.png"></div><div class="circuit-text"><h2>Сузука</h2><p>Япония. Уникальная "восьмерка".</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/bh.png"></div><div class="circuit-text"><h2>Сахир</h2><p>Бахрейн. Ночная гонка в пустыне.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/sa.png"></div><div class="circuit-text"><h2>Джидда</h2><p>С. Аравия. Самая быстрая уличная трасса.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/mi.png"></div><div class="circuit-text"><h2>Майами</h2><p>США. Городской автодром вокруг стадиона.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/ca.png"></div><div class="circuit-text"><h2>Монреаль</h2><p>Канада. Трасса Жиля Вильнева.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/mc.png"></div><div class="circuit-text"><h2>Монте-Карло</h2><p>Монако. Самая узкая трасса мира.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/es.png"></div><div class="circuit-text"><h2>Барселона</h2><p>Испания. Тестовый полигон Европы.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/at.png"></div><div class="circuit-text"><h2>Ред Булл Ринг</h2><p>Австрия. Самый короткий круг в Альпах.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/uk.png"></div><div class="circuit-text"><h2>Сильверстоун</h2><p>Великобритания. Родина Формулы-1.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/be.png"></div><div class="circuit-text"><h2>Спа</h2><p>Бельгия. Легендарный О'Руж.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/hu.png"></div><div class="circuit-text"><h2>Хунгароринг</h2><p>Венгрия. Жаркая и извилистая трасса.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/nl.png"></div><div class="circuit-text"><h2>Зандворт</h2><p>Нидерланды. Крутые бэнкинги у моря.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/it.png"></div><div class="circuit-text"><h2>Монца</h2><p>Италия. Храм скорости.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/es.png"></div><div class="circuit-text"><h2>Мадрид</h2><p>Испания. Новейшая трасса в календаре.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/az.png"></div><div class="circuit-text"><h2>Баку</h2><p>Азербайджан. Самая быстрая городская прямая.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/sg.png"></div><div class="circuit-text"><h2>Марина-Бэй</h2><p>Сингапур. Тяжелейшая ночная гонка.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/us.png"></div><div class="circuit-text"><h2>Остин</h2><p>США. Трасса Америк.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/mx.png"></div><div class="circuit-text"><h2>Мехико</h2><p>Мексика. Редкий воздух на высоте 2км.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/br.png"></div><div class="circuit-text"><h2>Интерлагос</h2><p>Бразилия. Атмосфера Сан-Паулу.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/lv.png"></div><div class="circuit-text"><h2>Лас-Вегас</h2><p>США. Гонка по ночному Стрипу.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/qa.png"></div><div class="circuit-text"><h2>Лосайл</h2><p>Катар. Быстрые и плавные повороты.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="tr/ae.png"></div><div class="circuit-text"><h2>Яс-Марина</h2><p>Абу-Даби. Гранд-финал сезона.</p></div></div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Формула‑1. Все права защищены.</p>
+        <p>Данные получены из официального источника: <a href="https://www.formula1.com">formula1.com</a></p>
+    </footer>
+
+<script src="scripts.js"></script>
+</body>
+</html>
