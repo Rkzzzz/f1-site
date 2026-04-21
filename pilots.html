@@ -185,6 +185,7 @@
                 <a href="circitc.html" role="menuitem">Трассы</a>
                 <a href="about.html" role="menuitem">О нас</a>
                 <a href="contacts.html" role="menuitem">Контакты</a>
+                <a href="history.html" role="menuitem">История F1</a>
             </div>
         </nav>
     </header>
@@ -513,5 +514,25 @@
     </footer>
 
     <script src="scripts.js"></script>
+    <script>
+        const btn = document.querySelector(".nav-menu-btn");
+        const dropdown = document.getElementById("nav-dropdown");
+        btn.addEventListener("click", () => {
+            const isOpen = dropdown.classList.toggle("open");
+            btn.setAttribute("aria-expanded", isOpen);
+        });
+        document.addEventListener("click", e => {
+            if (!e.target.closest(".nav")) {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+            }
+        });
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+            }
+        });
+    </script>
 </body>
 </html>
