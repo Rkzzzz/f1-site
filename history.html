@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История Формулы‑1</title>
+    <link rel="stylesheet" href="coloring.css?v=2">
+    <style>
+        .nav { position: relative; }
+        .nav-menu-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: none; border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 6px; color: inherit; cursor: pointer;
+            font-size: 1rem; padding: 8px 16px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .nav-menu-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+        .nav-menu-btn .arrow { font-size: 0.7em; transition: transform 0.25s; display: inline-block; }
+        .nav-menu-btn[aria-expanded="true"] .arrow { transform: rotate(180deg); }
+        .nav-dropdown {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            min-width: 200px; background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 1000;
+            overflow: hidden; animation: dropIn 0.2s ease;
+        }
+        .nav-dropdown.open { display: block; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown a {
+            display: block; padding: 11px 18px; text-decoration: none; color: inherit;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transition: background 0.15s, padding-left 0.15s; font-size: 0.95rem;
+        }
+        .nav-dropdown a:last-child { border-bottom: none; }
+        .nav-dropdown a:hover { background: rgba(255,255,255,0.08); padding-left: 24px; }
+        .nav-dropdown a.active { background: rgba(225, 6, 0, 0.15); color: #e10600; }
+
+        /* Page content */
+        .history-wrap {
+            max-width: 900px;
+            margin: 48px auto;
+            padding: 0 16px;
+        }
+
+        .history-wrap h1 {
+            margin-bottom: 12px;
+        }
+
+        .history-lead {
+            font-size: 1.1rem;
+            opacity: 0.7;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            border-left: 3px solid #e10600;
+            padding-left: 16px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-title.sad { color: #e10600; }
+        .section-title.happy { color: #22c55e; }
+
+        .moments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .moment-card {
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .moment-card:hover {
+            border-color: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .moment-year {
+            display: inline-block;
+            background: rgba(255,255,255,0.08);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .moment-card.sad .moment-year { color: #e10600; }
+        .moment-card.happy .moment-year { color: #22c55e; }
+
+        .moment-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .moment-desc {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            line-height: 1.6;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 30px 0 40px;
+        }
+
+        .stat-card {
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px 12px;
+            text-align: center;
+        }
+
+        .stat-card .num {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #e10600;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .label {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .moments-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="index.html"><img src="https://resources.formulaf1.com/assets/images/logo.png" alt="Формула‑1" width="120"></a>
+        </div>
+        <nav class="nav">
+            <button class="nav-menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown">
+                Меню <span class="arrow">▾</span>
+            </button>
+            <div class="nav-dropdown" id="nav-dropdown" role="menu">
+                <a href="index.html" role="menuitem">Главная</a>
+                <a href="register.html" role="menuitem">Регистрация\ Авторизация</a>
+                <a href="calendar.html" role="menuitem">Календарь</a>
+                <a href="pilots.html" role="menuitem">Пилоты</a>
+                <a href="teams.html" role="menuitem">Команды</a>
+                <a href="result.html" role="menuitem">Результаты</a>
+                <a href="circitc.html" role="menuitem">Трассы</a>
+                <a href="about.html" role="menuitem">О нас</a>
+                <a href="contacts.html" role="menuitem">Контакты</a>
+                <a href="history.html" role="menuitem" class="active">История F1</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="history-wrap">
+            <h1>История Формулы‑1</h1>
+            <p class="history-lead">
+                Печальные и радостные события, которые навсегда вошли в историю королевы автоспорта
+            </p>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="num">75+</div>
+                    <div class="label">Лет истории</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num">1100+</div>
+                    <div class="label">Гонок</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num">35</div>
+                    <div class="label">Чемпиона</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num">20+</div>
+                    <div class="label">Погибших</div>
+                </div>
+            </div>
+
+            <h2 class="section-title sad">Печальные моменты</h2>
+            <div class="moments-grid">
+                <div class="moment-card sad">
+                    <span class="moment-year">1994</span>
+                    <div class="moment-title">Гибель Айртона Сенны</div>
+                    <div class="moment-desc">Величайший пилот в истории F1 погиб во время Гран-при Сан-Марино. Его смерть потрясла весь мир и привела к радикальным изменениям в безопасности.</div>
+                </div>
+                <div class="moment-card sad">
+                    <span class="moment-year">1994</span>
+                    <div class="moment-title">Гибель Роланда Ратценбергера</div>
+                    <div class="moment-desc">Австриец разбился в квалификации перед Гран-при Сан-Марино. Это была первая смерть пилоты на Гран-при за 12 лет.</div>
+                </div>
+                <div class="moment-card sad">
+                    <span class="moment-year">1973</span>
+                    <div class="moment-title">Гибель Роджера Уильямсона</div>
+                    <div class="moment-desc">Британец погиб на Гран-при Нидерландов после того, как его болид загорелся. Марш Гонзалес трагически не успел помочь.</div>
+                </div>
+                <div class="moment-card sad">
+                    <span class="moment-year">1968</span>
+                    <div class="moment-title">Гибель Джима Кларка</div>
+                    <div class="moment-desc">Двукратный чемпион мира погиб во время гоночного уикенда Формулы‑2 в Хоккенхайме. Легенда навсегда ушла из спорта.</div>
+                </div>
+                <div class="moment-card sad">
+                    <span class="moment-year">1977</span>
+                    <div class="moment-title">Гибель Тома Прайса</div>
+                    <div class="moment-desc">Американский пилот разбился насмерть на трассе Зандворт. Его смерть стала одной из причин создания системы Halo.</div>
+                </div>
+                <div class="moment-card sad">
+                    <span class="moment-year">2014</span>
+                    <div class="moment-title">Гибель Жюля Бьянки</div>
+                    <div class="moment-desc">Французский пилот получил смертельные травмы после аварии на Гран-при Японии, став первым погибшим пилотом F1 за 20 лет.</div>
+                </div>
+                <div class="moment-card sad">
+                    <span class="moment-year">1966</span>
+                    <div class="moment-title">Гибель Джона Тейлора</div>
+                    <div class="moment-desc">Британец погиб в результате аварии, в которую также попали Джим Кларк и Джек Брэбэм на Гран-при Германии.</div>
+                </div>
+                <div class="moment-card sad">
+                    <span class="moment-year">1970</span>
+                    <div class="moment-title">Гибель Брюса Макларена</div>
+                    <div class="moment-desc">Основатель команды McLaren погиб во время тестов в Гудвуде на прототипе Can-Am.</div>
+                </div>
+            </div>
+
+            <h2 class="section-title happy">Радостные моменты</h2>
+            <div class="moments-grid">
+                <div class="moment-card happy">
+                    <span class="moment-year">2021</span>
+                    <div class="moment-title">Чемпионский титул Макса Ферстаппена</div>
+                    <div class="moment-desc">Макс в финальной гонке в Абу-Даби опередил Льюиса Хэмилтона, выиграв свой первый чемпионский титул в драматичнейшем финале сезона.</div>
+                </div>
+                <div class="moment-card happy">
+                    <span class="moment-year">2008</span>
+                    <div class="moment-title">Первый титул Льюиса Хэмилтона</div>
+                    <div class="moment-desc">Британец выиграл чемпионство в последнем повороте последней гонки сезона в Бразилии, опередив Фелипе Массу всего на одно очко.</div>
+                </div>
+                <div class="moment-card happy">
+                    <span class="moment-year">1950</span>
+                    <div class="moment-title">Первый сезон Формулы‑1</div>
+                    <div class="moment-desc">Чемпионат мира F1 стартовал 13 мая в Сильверстоуне. Победителем первой гонки стал Джузеппе Фарина на Alfa Romeo.</div>
+                </div>
+                <div class="moment-card happy">
+                    <span class="moment-year">2005</span>
+                    <div class="moment-title">Первый титул Фернандо Алонсо</div>
+                    <div class="moment-desc">Испанец в 24 года стал самым молодым чемпионом мира в истории F1 на тот момент, выступая за команду Renault.</div>
+                </div>
+                <div class="moment-card happy">
+                    <span class="moment-year">2019</span>
+                    <div class="moment-title">1000-й Гран-при F1</div>
+                    <div class="moment-desc">Юбилейная гонка прошла в Китае, став важной вехой в истории королевы автоспорта.</div>
+                </div>
+                <div class="moment-card happy">
+                    <span class="moment-year">1988</span>
+                    <div class="moment-title">Дубль Сенны и Проста</div>
+                    <div class="moment-desc">McLaren выиграл все 16 гонок сезона — абсолютный рекорд, который до сих пор не побит.</div>
+                </div>
+                <div class="moment-card happy">
+                    <span class="moment-year">2014</span>
+                    <div class="moment-title">Эра гибридных двигателей</div>
+                    <div class="moment-desc">Новая эра F1 с гибридными турбодвигателями V6 ознаменовала переход к более экологичным технологиям.</div>
+                </div>
+                <div class="moment-card happy">
+                    <span class="moment-year">2023</span>
+                    <div class="moment-title">50 лет первой победы Ferrari</div>
+                    <div class="moment-desc">Скудерия отметила полувековой юбилей своих легендарных побед в Формуле‑1.</div>
+                </div>
+                <div class="moment-card happy">
+                    <span class="moment-year">2021</span>
+                    <div class="moment-title">Возвращение Sprint Qualifying</div>
+                    <div class="moment-desc">Спринтерские гонки были впервые введены в формат уикенда, добавив новый формат соревнований.</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Формула‑1. Все права защищены.</p>
+        <p>Данные получены из официального источника: <a href="https://www.formula1.com">formula1.com</a></p>
+    </footer>
+
+    <script src="scripts.js"></script>
+    <script>
+        const btn = document.querySelector(".nav-menu-btn");
+        const dropdown = document.getElementById("nav-dropdown");
+        btn.addEventListener("click", () => {
+            const isOpen = dropdown.classList.toggle("open");
+            btn.setAttribute("aria-expanded", isOpen);
+        });
+        document.addEventListener("click", e => {
+            if (!e.target.closest(".nav")) {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+            }
+        });
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+            }
+        });
+    </script>
+</body>
+
+</html>

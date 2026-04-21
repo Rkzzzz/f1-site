@@ -56,6 +56,7 @@
                 <a href="circitc.html" role="menuitem">Трассы</a>
                 <a href="about.html" role="menuitem">О нас</a>
                 <a href="contacts.html" role="menuitem">Контакты</a>
+                <a href="history.html" role="menuitem">История F1</a>
             </div>
         </nav>
     </header>
@@ -74,7 +75,7 @@
             <div class="circuit-row"><div class="circuit-img"><img src="tr/es.png"></div><div class="circuit-text"><h2>Барселона</h2><p>Испания. Тестовый полигон Европы.</p></div></div>
             <div class="circuit-row"><div class="circuit-img"><img src="tr/at.png"></div><div class="circuit-text"><h2>Ред Булл Ринг</h2><p>Австрия. Самый короткий круг в Альпах.</p></div></div>
             <div class="circuit-row"><div class="circuit-img"><img src="tr/uk.png"></div><div class="circuit-text"><h2>Сильверстоун</h2><p>Великобритания. Родина Формулы-1.</p></div></div>
-            <div class="circuit-row"><div class="circuit-img"><img src="tr/be.png"></div><div class="circuit-text"><h2>Спа</h2><p>Бельгия. Легендарный О'Руж.</p></div></div>
+            <div class="circuit-row"><div class="circuit-img"><img src="images/spa image.jpg"></div><div class="circuit-text"><h2>Спа</h2><p>Бельгия. Легендарный О'Руж.</p></div></div>
             <div class="circuit-row"><div class="circuit-img"><img src="tr/hu.png"></div><div class="circuit-text"><h2>Хунгароринг</h2><p>Венгрия. Жаркая и извилистая трасса.</p></div></div>
             <div class="circuit-row"><div class="circuit-img"><img src="tr/nl.png"></div><div class="circuit-text"><h2>Зандворт</h2><p>Нидерланды. Крутые бэнкинги у моря.</p></div></div>
             <div class="circuit-row"><div class="circuit-img"><img src="tr/it.png"></div><div class="circuit-text"><h2>Монца</h2><p>Италия. Храм скорости.</p></div></div>
@@ -96,6 +97,28 @@
         <p>Данные получены из официального источника: <a href="https://www.formula1.com">formula1.com</a></p>
     </footer>
 
-<script src="scripts.js"></script>
+    <script src="scripts.js"></script>
+    <script>
+        const btn = document.querySelector(".nav-menu-btn");
+        const dropdown = document.getElementById("nav-dropdown");
+        btn.addEventListener("click", () => {
+            const isOpen = dropdown.classList.toggle("open");
+            btn.setAttribute("aria-expanded", isOpen);
+        });
+        document.addEventListener("click", e => {
+            if (!e.target.closest(".nav")) {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+            }
+        });
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") {
+                dropdown.classList.remove("open");
+                btn.setAttribute("aria-expanded", false);
+                btn.focus();
+            }
+        });
+    </script>
 </body>
+
 </html>
